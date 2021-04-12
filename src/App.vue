@@ -16,7 +16,7 @@
   <main class="main">
     <h1 class="title">Karakızan'a Hoş Geldiniz!</h1>
     <p class="question">
-      Bugün Zahir'in kalbi kırıldı mı?
+      Zahir'in kalbi bugün kırıldı mı?
     </p>
     <div class="heart">
       <Heart :editMode="editMode" />
