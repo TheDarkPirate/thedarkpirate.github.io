@@ -17,10 +17,14 @@ const db = firebaseApp.firestore();
 const heartCollection = db.collection("heart");
 
 export const useHeartData = () => {
-  const heartData = ref({ isBroken: false, counter: "" });
+  const heartData = ref({ id: "", isBroken: false, counter: "" });
   const close = heartCollection.onSnapshot((snapshot) => {
     heartData.value = snapshot.docs.map(d => ({id: d.id, ...d.data() }))[0];
   });
   onUnmounted(close);
   return heartData;
+}
+
+export const updateHeartData = (id, heartData) => {
+  return heartCollection.doc(id).update(heartData);
 }

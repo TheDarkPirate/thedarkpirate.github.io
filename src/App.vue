@@ -16,12 +16,16 @@
   <main class="main">
     <h1 class="title">Karakızan'a Hoş Geldiniz!</h1>
     <p class="question">
-      Zahir'in kalbi bugün kırıldı mı?
+      Bugün Zahir'in kalbi kırıldı mı?
     </p>
     <div class="heart">
-      <Heart />
+      <Heart :editMode="editMode" />
     </div>
-    <div class="counter">Zahir'in kalbi {{ heartData.counter }}</div>
+    <div class="counter">
+      <span class="static">Zahir'in kalbi </span>
+      <span v-if="!editMode">{{ heartData.counter }}</span>
+      <input class="counterInput" type="text" v-model="heartData.counter" @change="updateCounter" v-else />
+    </div>
   </main>
 </template>
 
@@ -30,7 +34,7 @@ import { computed, onMounted, ref } from "vue";
 import pirateFlag from "./assets/kara-kizan.svg";
 import prideFlag from "./assets/gay-kizan.svg";
 import Heart from "./components/Heart.vue";
-import { useHeartData } from "./firebase";
+import { useHeartData, updateHeartData } from "./firebase";
 const heartData = useHeartData();
 
 const showDove = ref(false);
@@ -44,7 +48,20 @@ const showPrideFlag = computed(() => {
     return flagHovered.value;
   }
   return false;
-})
+});
+
+const editMode = ref(false);
+
+const counterText = ref(heartData.value.counter);
+
+function updateCounter() {
+  if(!editMode.value) return;
+
+  updateHeartData(heartData.value.id, {
+    isBroken: heartData.value.isBroken,
+    counter: heartData.value.counter
+  })
+}
 
 onMounted(() => {
   window.addEventListener("keyup", (e) => {
@@ -57,6 +74,9 @@ onMounted(() => {
         break;
       case "s":
         showBurrito.value = !showBurrito.value;
+        break;
+      case "z":
+        editMode.value = !editMode.value;
         break;
       default:
         break;
@@ -132,9 +152,20 @@ main.main {
   }
   .heart {
     flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .counter {
     font-size: 30px;
+    .counterInput {
+      border: none;
+      background-color: transparent;
+      color: #FFF;
+      font-size: inherit;
+      font-family: inherit;
+      text-decoration: underline;
+    }
   }
 }
 </style>
